@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حاسبة مساحات الجدران وتكلفة الدهان</title>
+  <!-- ربط Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-4">
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+    <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">حاسبة الدهان — mypremer_1</h1>
+    <form method="post" class="space-y-4">
+      <!-- أبعاد الغرفة -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block font-semibold mb-1">طول الغرفة (م)</label>
+          <input name="length" type="number" step="0.01" required class="w-full p-2 border border-gray-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">عرض الغرفة (م)</label>
+          <input name="width" type="number" step="0.01" required class="w-full p-2 border border-gray-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">ارتفاع (م)</label>
+          <input name="height" type="number" step="0.01" required class="w-full p-2 border border-gray-300 rounded">
+        </div>
+      </div>
+
+      <!-- الأبواب والنوافذ -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block font-semibold mb-1">عدد الأبواب</label>
+          <input name="doors" type="number" step="1" value="0" class="w-full p-2 border border-gray-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">مساحة الباب الواحدة (م²)</label>
+          <input name="door_area" type="number" step="0.01" value="2.0" class="w-full p-2 border border-gray-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">عدد النوافذ</label>
+          <input name="windows" type="number" step="1" value="0" class="w-full p-2 border border-gray-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">مساحة الشباك الواحدة (م²)</label>
+          <input name="window_area" type="number" step="0.01" value="1.5" class="w-full p-2 border border-gray-300 rounded">
+        </div>
+      </div>
+
+      <!-- الطبقات -->
+      <div>
+        <label class="block font-semibold mb-1">عدد طبقات الدهان</label>
+        <input name="coats" type="number" step="0.1" value="1" class="w-full p-2 border border-gray-300 rounded">
+      </div>
+
+      <!-- الأسعار -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold mb-1">سعر الدهان لكل م²</label>
+          <input name="paint_price" type="number" step="0.01" value="0" class="w-full p-2 border border-gray-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">سعر العمل لكل م²</label>
+          <input name="labour_price" type="number" step="0.01" value="0" class="w-full p-2 border border-gray-300 rounded">
+        </div>
+      </div>
+
+      <button type="submit" class="w-full md:w-auto bg-blue-600 text-white font-bold px-6 py-2 rounded hover:bg-blue-700 transition">
+        احسب
+      </button>
+    </form>
+
+    <!-- عرض النتائج -->
+    {% if result %}
+      <div class="mt-6 p-4 rounded-lg {% if result.error %}bg-red-100 text-red-700 border-l-4 border-red-600{% else %}bg-blue-50 border-l-4 border-blue-600{% endif %}">
+        {% if result.error %}
+          <strong>خطأ:</strong> {{ result.error }}
+        {% else %}
+          <p>مساحة الجدران الإجمالية: {{ result.wall_area }} م²</p>
+          <p>مساحة الفتحات (أبواب/نوافذ): {{ result.openings }} م²</p>
+          <p>المساحة الصالحة للدهان بعد الطرح: {{ result.net_area }} م²</p>
+          <p>المساحة بعد عدد الطبقات ({{ result.coats }}): {{ result.paintable_area }} م²</p>
+          <hr class="my-2">
+          <p>تكلفة الدهان: {{ result.paint_cost }}</p>
+          <p>تكلفة العمل: {{ result.labour_cost }}</p>
+          <h3 class="font-bold text-lg">الإجمالي: {{ result.total_cost }}</h3>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
